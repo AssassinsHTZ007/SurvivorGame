@@ -353,7 +353,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4f65e2ed1bea42649bd1f1e708a03ce3, type: 3}
       propertyPath: m_Name
-      value: Arissa
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4f65e2ed1bea42649bd1f1e708a03ce3, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f65e2ed1bea42649bd1f1e708a03ce3, type: 3}
@@ -393,14 +397,19 @@ Animator:
   m_Controller: {fileID: 9100000, guid: be9c4316b8b86104096a28c166d39e95, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &728320182
+--- !u!4 &728320183 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4f65e2ed1bea42649bd1f1e708a03ce3, type: 3}
+  m_PrefabInstance: {fileID: 728320178}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &728320184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -412,11 +421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3c631256b17664b9c6c74e1b15c7c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &728320183 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4f65e2ed1bea42649bd1f1e708a03ce3, type: 3}
-  m_PrefabInstance: {fileID: 728320178}
-  m_PrefabAsset: {fileID: 0}
+  velocity: 10
 --- !u!1 &758451460
 GameObject:
   m_ObjectHideFlags: 0

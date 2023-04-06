@@ -5,81 +5,99 @@ using UnityEngine.InputSystem;
 
 public class PlayerMoviment : MonoBehaviour
 {
-    private float velocity = 5;
-    private bool isMoving;
-    private float rotation;
-    private Animator animator;
-    private PlayerMovement playerMoviment;
-
-    private Vector2 Chmoviment;
-    private Vector3 Chmovimentv3;
     private CharacterController characterController;
+    private PlayerInput playerInput;
+    private Animator animator;
+
+    private bool a_isWalking;
+    private bool a_isRuning;
+
+
+    Vector2 currentMovimentInput;
+    Vector3 currentMoviment;
+    bool isMovimentPressed;
+    float rotationFactorPerFrame = 10f;
+
+    [SerializeField] private float velocity;
+
     private void Awake()
     {
+        playerInput = new PlayerInput();
         characterController = GetComponent<CharacterController>();
-        playerMoviment = new PlayerMovement();
+        animator = GetComponent<Animator>();
 
-        playerMoviment.Movement.Walk.started += Onmoviment;
+        playerInput.CharacterControls.Move.started += onMovimentInput;
+        playerInput.CharacterControls.Move.canceled += onMovimentInput;
+        playerInput.CharacterControls.Move.performed += onMovimentInput;
 
-        playerMoviment.Movement.Walk.canceled += Onmoviment;       
 
-        playerMoviment.Movement.Walk.performed += Onmoviment;
 
-        animator = GetComponent<Animator>();    
-       
     }
-    private void Onmoviment(InputAction.CallbackContext context)
+
+    void onMovimentInput(InputAction.CallbackContext context)
     {
-        Chmoviment = context.ReadValue<Vector2>();
-        Chmovimentv3.x = Chmoviment.x;
-        Chmovimentv3.y = 0f;
-        Chmovimentv3.z = Chmoviment.y;
-        
+        currentMovimentInput = context.ReadValue<Vector2>();
+        currentMoviment.x = currentMovimentInput.x;
+        currentMoviment.z = currentMovimentInput.y;
+        isMovimentPressed = currentMovimentInput.x != 0 || currentMovimentInput.y != 0;
     }
+
+
+
     // Update is called once per frame
     void Update()
     {
         MovePlayer();
-        AnimatonHandler();
-        PlayerRotationHandler();
+        AnimationHandler();
+        RotationHandler();
     }
-    private void PlayerRotationHandler()
+
+    private void RotationHandler()
     {
         Vector3 positionToLookAt;
-        positionToLookAt.x = Chmovimentv3.x;
+        positionToLookAt.x = currentMoviment.x;
         positionToLookAt.y = 0f;
-        positionToLookAt.z = Chmovimentv3.z;
+        positionToLookAt.z = currentMoviment.z;
         Quaternion currentRotation = transform.rotation;
 
-        Quaternion rotation;
-
-        if(isMoving)
+        Debug.Log(isMovimentPressed);
+        if (isMovimentPressed)
         {
-            Quaternion lookAtRotation = Quaternion.LookRotation(positionToLookAt);
-
+            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
         }
     }
+
+    private void AnimationHandler()
+    {
+        bool isWalking = animator.GetBool("isWalking");
+        bool isRunning = animator.GetBool("isRunning");
+
+        if (isMovimentPressed && !isWalking)
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else if (!isMovimentPressed && isWalking)
+        {
+            animator.SetBool("isWalking", false);
+        }
+    }
+
     private void MovePlayer()
     {
-        characterController.Move(Chmoviment * Time.deltaTime * velocity);
+        characterController.Move(currentMoviment * Time.deltaTime * velocity);
     }
-    private void AnimatonHandler()
-    {
-        if(!animator.GetBool("iswalking")&& isMoving)
-        {
-            animator.SetBool("iswalking", true);
-        }
-        if (animator.GetBool("iswalking") && !isMoving)
-        {
-            animator.SetBool("iswalking", false);
-        }
-    }
+
+
+
+
     private void OnEnable()
     {
-        playerMoviment.Movement.Enable();
+        playerInput.CharacterControls.Enable();
     }
+
     private void OnDisable()
-    { 
-        playerMoviment.Movement.Disable();
+    {
+        playerInput.CharacterControls.Disable();
     }
 }
